@@ -13,19 +13,8 @@ namespace CommonCode.Web.Controllers
         {
             base.OnActionExecuting(filterContext);
 
-            if (Message != null)
-            {
-                if (Message.TimesSeen > 1)
-                {
-                    Message = null;
-                }
-                else
-                {
-                    Message.TimesSeen++;
-                }
-            }
-
             ViewBag.Message = Message;
+            Message = null;
         }
 
         protected override void OnActionExecuted(ActionExecutedContext filterContext)

@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dapper, Version=1.50.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\SpeakScience\packages\Dapper.1.50.5\lib\net451\Dapper.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,6 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\Validate.cs" />
+    <Compile Include="POCOs\IPoco.cs" />
+    <Compile Include="Repositories\RepositoryBase.EaseOfUse.cs" />
+    <Compile Include="Repositories\RepositoryBase.cs" />
     <Compile Include="DataResult.cs" />
     <Compile Include="DataResultType.cs" />
     <Compile Include="DataResultTyped.cs" />
@@ -60,6 +67,7 @@
     <Compile Include="Helpers\Verify.cs" />
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ServiceBase.cs" />
     <Compile Include="UnitOfWork.Connections.cs">
       <DependentUpon>UnitOfWork.cs</DependentUpon>
     </Compile>
@@ -68,6 +76,9 @@
       <DependentUpon>UnitOfWork.cs</DependentUpon>
     </Compile>
     <Compile Include="ValidationCollection.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,6 +1,6 @@
-﻿using CommonCode.BusinessLayer.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using CommonCode.BusinessLayer.Helpers;
 
 namespace CommonCode.BusinessLayer
 {

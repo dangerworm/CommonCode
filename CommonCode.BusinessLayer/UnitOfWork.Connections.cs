@@ -13,6 +13,17 @@ namespace CommonCode.BusinessLayer
                 throw new InvalidOperationException("You must call Begin() before you can access the connection.");
             }
 
+            // Dapper closes the connection after each call.
+            // We can tell the difference between our operations and Dapper's because
+            // Dapper closes the connection and sets the ConnectionString to "" whereas
+            // we close and set _connection to null. So if there's no connection string
+            // it probably means we need to make another call, so open the connection.
+            if (_connection.ConnectionString == string.Empty)
+            {
+                _connection = _connectionFactory.Make(_connectionString);
+                _connection.Open();
+            }
+
             return _connection;
         }
 

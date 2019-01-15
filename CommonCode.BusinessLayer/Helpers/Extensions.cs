@@ -1,11 +1,22 @@
 ﻿using System;
 using System.Linq;
+using System.Security;
 using System.Text;
 
 namespace CommonCode.BusinessLayer.Helpers
 {
     public static partial class Extensions
     {
+        public static string Escape(this string value)
+        {
+            return SecurityElement.Escape(value);
+        }
+
+        public static string Unescape(this string value)
+        {
+            return SecurityElement.FromString($"<xml>{value}</xml>")?.Text ?? "";
+        }
+
         public static bool IsAny<T>(this T value, params T[] values)
         {
             return values.Contains(value);

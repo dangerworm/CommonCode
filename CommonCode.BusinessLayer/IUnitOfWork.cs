@@ -1,18 +1,17 @@
 ﻿using System.Collections.Generic;
-using System.Data;
 
 namespace CommonCode.BusinessLayer
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork<TConnection, TTransaction>
     {
         // Connection handling
-        IDbConnection GetConnection();
-        bool HasConnection();
-        UnitOfWork Begin();
+        TConnection GetConnection();
+        bool HasConnectionOrSession();
+        IUnitOfWork<TConnection, TTransaction> Begin();
         void End();
 
         // Transaction handling
-        IDbTransaction GetTransaction();
+        TTransaction GetTransaction();
         void BeginTransaction();
         bool IsSuccess();
         void Commit();

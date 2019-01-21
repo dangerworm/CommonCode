@@ -1,14 +1,12 @@
 ﻿using CommonCode.BusinessLayer.Helpers;
 using System;
-using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 
 namespace CommonCode.BusinessLayer
 {
-    public partial class UnitOfWork
+    public partial class SqlUnitOfWork<TConnection, TTransaction>
     {
-        public IDbTransaction GetTransaction()
+        public TTransaction GetTransaction()
         {
             return _transaction;
         }
@@ -21,7 +19,7 @@ namespace CommonCode.BusinessLayer
                     "Transaction has already been started. You must call EndTransaction() before calling BeginTransaction() again.");
             }
 
-            _transaction = (SqlTransaction)GetConnection().BeginTransaction();
+            _transaction = (TTransaction)GetConnection().BeginTransaction();
         }
 
         public bool IsSuccess()
@@ -32,7 +30,7 @@ namespace CommonCode.BusinessLayer
         private void FinaliseTransaction()
         {
             _transaction.Dispose();
-            _transaction = null;
+            _transaction = default(TTransaction);
             _results.Clear();
         }
 

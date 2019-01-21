@@ -3,21 +3,22 @@ using Dapper;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using CommonCode.BusinessLayer.POCOs;
 
 namespace CommonCode.BusinessLayer.Repositories
 {
-    public abstract partial class RepositoryBase<T> where T : IPoco
+    public abstract partial class SqlRepositoryBase<T>
     {
+        protected string Schema { get; set; }
         protected string TableName { get; set; }
 
-        protected RepositoryBase(IUnitOfWork unitOfWork, string tableName)
+        protected SqlRepositoryBase(IUnitOfWork<IDbConnection, IDbTransaction> unitOfWork, string tableName, string schema = "dbo")
         {
             Verify.NotNull(unitOfWork, nameof(unitOfWork));
             Verify.ValidString(tableName, nameof(tableName));
 
             UnitOfWork = unitOfWork;
             TableName = tableName;
+            Schema = schema;
         }
 
         protected void Initialise(string tableName)
@@ -31,7 +32,7 @@ namespace CommonCode.BusinessLayer.Repositories
         {
             Verify.ValidString(TableName, nameof(TableName));
 
-            var storedProcedureName = $"USP_{TableName}_Create";
+            var storedProcedureName = $"{Schema}.USP_{TableName}_Create";
             var parameters = new DynamicParameters();
 
             AddCommonParameters(ref parameters, value);
@@ -43,7 +44,7 @@ namespace CommonCode.BusinessLayer.Repositories
         {
             Verify.ValidString(TableName, nameof(TableName));
 
-            var storedProcedureName = $"USP_{TableName}_GetAll";
+            var storedProcedureName = $"{Schema}.USP_{TableName}_GetAll";
             var parameters = new DynamicParameters();
 
             return ReadList(storedProcedureName, parameters);
@@ -53,7 +54,7 @@ namespace CommonCode.BusinessLayer.Repositories
         {
             Verify.ValidString(TableName, nameof(TableName));
 
-            var storedProcedureName = $"USP_{TableName}_GetById";
+            var storedProcedureName = $"{Schema}.USP_{TableName}_GetById";
             var parameters = new DynamicParameters();
 
             parameters.Add("@Id", id, DbType.Int32);
@@ -63,7 +64,7 @@ namespace CommonCode.BusinessLayer.Repositories
 
         public virtual DataResult<T> Update(T value)
         {
-            var storedProcedureName = $"USP_{TableName}_Update";
+            var storedProcedureName = $"{Schema}.USP_{TableName}_Update";
 
             var parameters = new DynamicParameters();
             parameters.Add("@Id", value.Id, DbType.Int32);
@@ -74,7 +75,7 @@ namespace CommonCode.BusinessLayer.Repositories
 
         public virtual DataResult Delete(int id)
         {
-            var storedProcedureName = $"USP_{TableName}_Delete";
+            var storedProcedureName = $"{Schema}.USP_{TableName}_Delete";
 
             var parameters = new DynamicParameters();
             parameters.Add("@Id", id, DbType.Int32);
@@ -87,8 +88,8 @@ namespace CommonCode.BusinessLayer.Repositories
             AddCommonParameters(ref parameters, value, null);
         }
 
-        protected virtual void AddCommonParameters(ref DynamicParameters parameters, T value,
-            IEnumerable<string> propertyNames)
+        protected virtual void AddCommonParameters(ref DynamicParameters parameters,
+            T value, IEnumerable<string> propertyNames)
         {
             var properties = typeof(T).GetProperties();
 

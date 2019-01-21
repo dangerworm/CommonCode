@@ -4,9 +4,9 @@ using System.Data;
 
 namespace CommonCode.BusinessLayer
 {
-    public partial class UnitOfWork
+    public partial class SqlUnitOfWork<TConnection, TTransaction>
     {
-        public IDbConnection GetConnection()
+        public TConnection GetConnection()
         {
             if (_connection == null)
             {
@@ -20,19 +20,19 @@ namespace CommonCode.BusinessLayer
             // it probably means we need to make another call, so open the connection.
             if (_connection.ConnectionString == string.Empty)
             {
-                _connection = _connectionFactory.Make(_connectionString);
+                _connection = (TConnection)_connectionFactory.Make(_connectionString);
                 _connection.Open();
             }
 
             return _connection;
         }
 
-        public bool HasConnection()
+        public bool HasConnectionOrSession()
         {
             return _connection != null;
         }
 
-        public UnitOfWork Begin()
+        public IUnitOfWork<TConnection, TTransaction> Begin()
         {
             if (_connection != null && _connection.State != ConnectionState.Closed)
             {
@@ -40,7 +40,7 @@ namespace CommonCode.BusinessLayer
                 //throw new InvalidOperationException("Unit of Work has already been started. You must call End() before calling Begin() again.");
             }
 
-            _connection = _connectionFactory.Make(_connectionString);
+            _connection = (TConnection)_connectionFactory.Make(_connectionString);
             _connection.Open();
 
             _results = new List<DataResult>();
@@ -66,7 +66,7 @@ namespace CommonCode.BusinessLayer
             }
 
             _connection.Dispose();
-            _connection = null;
+            _connection = default(TConnection);
         }
     }
 }

@@ -193,7 +193,7 @@ namespace CommonCode.BusinessLayer.Repositories
                 friendlyMessage = !string.IsNullOrWhiteSpace(friendlyMessage) ? friendlyMessage : Success;
                 internalMessage = !string.IsNullOrWhiteSpace(internalMessage) ? internalMessage : $"Procedure {functionName} completed successfully.";
             }
-            else if (resultType.Equals(DataResultType.Success) && !functionName.ToLower().Contains("get") && !functionName.ToLower().Contains("read"))
+            else if (resultType.Equals(DataResultType.Success) && !functionName.ToLower().Contains("return"))
             {
                 resultType = DataResultType.NotRequired;
                 friendlyMessage = !string.IsNullOrWhiteSpace(friendlyMessage) && !friendlyMessage.Equals(Success) ? friendlyMessage : "No actions required";

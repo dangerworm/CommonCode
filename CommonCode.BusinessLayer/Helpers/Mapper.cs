@@ -39,7 +39,7 @@ namespace CommonCode.BusinessLayer.Helpers
         public static IEnumerable<T2> MapAll<T1, T2>(this IEnumerable<T1> sources)
             where T2 : new()
         {
-            return sources.Select(Map<T1, T2>);
+            return sources?.Select(Map<T1, T2>);
         }
 
         public static DataResult<T2> Convert<T1, T2>(this DataResult<T1> dataResult)

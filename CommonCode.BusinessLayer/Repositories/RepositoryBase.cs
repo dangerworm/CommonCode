@@ -25,8 +25,23 @@ namespace CommonCode.BusinessLayer.Repositories
             HasCustomReader = hasCustomReader;
         }
 
+        protected virtual T Map(string storedProcedureName, DynamicParameters parameters)
+        {
+            throw new NotImplementedException("HasCustomReader is set to true but Map has not been implemented.");
+        }
+
+        protected virtual IEnumerable<T> MapList(string storedProcedureName, DynamicParameters parameters)
+        {
+            throw new NotImplementedException("HasCustomReader is set to true but MapList has not been implemented.");
+        }
+
         protected DataResult<T> Read(string storedProcedureName, DynamicParameters parameters)
         {
+            if (HasCustomReader)
+            {
+                return Read(storedProcedureName, parameters, Map);
+            }
+
             parameters = parameters ?? new DynamicParameters();
             parameters.Add("RowCount", null, DbType.Int32, ParameterDirection.ReturnValue);
 
@@ -50,6 +65,11 @@ namespace CommonCode.BusinessLayer.Repositories
 
         protected DataResult<IEnumerable<T>> ReadList(string storedProcedureName, DynamicParameters parameters)
         {
+            if (HasCustomReader)
+            {
+                return ReadList(storedProcedureName, parameters, MapList);
+            }
+
             parameters = parameters ?? new DynamicParameters();
             parameters.Add("RowCount", null, DbType.Int32, ParameterDirection.ReturnValue);
 
@@ -63,6 +83,36 @@ namespace CommonCode.BusinessLayer.Repositories
                 var rowCount = parameters.Get<int>("RowCount");
 
                 return CreateDataResult(storedProcedureName, rowCount, values, DataResultType.Success, Success, Success);
+            }
+            catch (DbException exception)
+            {
+                CreateDataResult(storedProcedureName, 0, default(T), DataResultType.UnknownError, FriendlyReadMessage, InternalReadMessage, null, exception);
+                throw;
+            }
+        }
+
+        protected DataResult<T> Read(string storedProcedureName, DynamicParameters parameters, Func<string, DynamicParameters, T> map)
+        {
+            try
+            {
+                var value = map(storedProcedureName, parameters);
+
+                return CreateDataResult(storedProcedureName, value == null ? 0 : 1, value, DataResultType.Success, Success, Success);
+            }
+            catch (DbException exception)
+            {
+                CreateDataResult(storedProcedureName, 0, default(T), DataResultType.UnknownError, FriendlyReadMessage, InternalReadMessage, null, exception);
+                throw;
+            }
+        }
+
+        protected DataResult<IEnumerable<T>> ReadList(string storedProcedureName, DynamicParameters parameters, Func<string, DynamicParameters, IEnumerable<T>> map)
+        {
+            try
+            {
+                var values = map(storedProcedureName, parameters);
+
+                return CreateDataResult(storedProcedureName, values.Count(), values, DataResultType.Success, Success, Success);
             }
             catch (DbException exception)
             {

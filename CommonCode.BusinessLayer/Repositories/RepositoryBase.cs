@@ -17,11 +17,12 @@ namespace CommonCode.BusinessLayer.Repositories
         protected IUnitOfWork UnitOfWork { get; }
         protected bool HasCustomReader { get; set; }
 
-        protected RepositoryBase(IUnitOfWork unitOfWork)
+        protected RepositoryBase(IUnitOfWork unitOfWork, bool hasCustomReader)
         {
             Verify.NotNull(unitOfWork, nameof(unitOfWork));
 
             UnitOfWork = unitOfWork;
+            HasCustomReader = hasCustomReader;
         }
 
         protected DataResult<T> Read(string storedProcedureName, DynamicParameters parameters)

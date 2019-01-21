@@ -2,6 +2,6 @@
 {
     public interface IPoco
     {
-        int Id { get; set; }
+        int? Id { get; }
     }
 }

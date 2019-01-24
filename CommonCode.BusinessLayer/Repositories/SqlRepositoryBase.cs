@@ -1,17 +1,16 @@
-﻿using System;
+﻿using CommonCode.BusinessLayer.Helpers;
+using CommonCode.BusinessLayer.Interfaces;
+using Dapper;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using CommonCode.BusinessLayer.Helpers;
-using CommonCode.BusinessLayer.Interfaces;
-using CommonCode.BusinessLayer.POCOs;
-using Dapper;
 
 namespace CommonCode.BusinessLayer.Repositories
 {
-    public abstract partial class SqlRepositoryBase<T> 
-        : IRepositoryBase<T> where T : IPoco
+    public abstract partial class SqlRepositoryBase<T>
+        : IRepositoryBase<T> where T : IIdentifiableByInteger
     {
         private const string FriendlyReadMessage = "The system was unable to read the requested item(s) from the database.";
         private const string InternalReadMessage = "A database exception occurred when trying to read the value(s).";
@@ -57,7 +56,7 @@ namespace CommonCode.BusinessLayer.Repositories
 
                     var rowCount = parameters.Get<int>("RowCount");
 
-                    return CreateDataResult(storedProcedureName, rowCount, 
+                    return CreateDataResult(storedProcedureName, rowCount,
                         value, DataResultType.Success, Success, Success);
                 }
             }
@@ -82,7 +81,7 @@ namespace CommonCode.BusinessLayer.Repositories
             {
                 using (var connection = UnitOfWork.GetConnection())
                 {
-                    var values = connection.Query<T>(storedProcedureName, 
+                    var values = connection.Query<T>(storedProcedureName,
                         parameters, commandType: CommandType.StoredProcedure);
 
                     var rowCount = parameters.Get<int>("RowCount");
@@ -120,7 +119,7 @@ namespace CommonCode.BusinessLayer.Repositories
             {
                 var values = map(storedProcedureName, parameters);
 
-                var itemCount = ((ICollection) values).Count;
+                var itemCount = ((ICollection)values).Count;
                 return CreateDataResult(storedProcedureName, itemCount, values, DataResultType.Success, Success, Success);
             }
             catch (DbException exception)

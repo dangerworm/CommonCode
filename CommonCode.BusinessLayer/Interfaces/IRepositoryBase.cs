@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using CommonCode.BusinessLayer.POCOs;
 using Dapper;
 
 namespace CommonCode.BusinessLayer.Interfaces
 {
-    public interface IRepositoryBase<T> where T : IPoco
+    public interface IRepositoryBase<T> where T : IIdentifiableByInteger
     {
         DataResult<T> Create(T value);
         DataResult Delete(int id);

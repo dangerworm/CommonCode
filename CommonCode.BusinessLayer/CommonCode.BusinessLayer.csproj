@@ -53,6 +53,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\Neo4JHelper.cs" />
+    <Compile Include="Interfaces\IGraphNode.cs" />
+    <Compile Include="Interfaces\IIdentifiableByGuid.cs" />
     <Compile Include="Neo4jClientFactory.cs" />
     <Compile Include="SpecialClasses\OrderedDictionary.cs" />
     <Compile Include="Helpers\Validate.cs" />
@@ -65,7 +67,7 @@
     <Compile Include="Neo4JUnitOfWork.Transactions.cs">
       <DependentUpon>Neo4JUnitOfWork.cs</DependentUpon>
     </Compile>
-    <Compile Include="POCOs\IPoco.cs" />
+    <Compile Include="Interfaces\IIdentifiableByInteger.cs" />
     <Compile Include="Interfaces\IRepositoryBase.cs" />
     <Compile Include="Repositories\Neo4JRepositoryBase.cs" />
     <Compile Include="Repositories\SqlRepositoryBase.EaseOfUse.cs" />

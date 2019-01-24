@@ -1,13 +1,12 @@
-﻿using System;
+﻿using CommonCode.BusinessLayer.Helpers;
+using Neo4j.Driver.V1;
+using Neo4jClient;
+using Neo4jClient.Cypher;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
-using System.Threading.Tasks;
-using CommonCode.BusinessLayer.Helpers;
-using Neo4j.Driver.V1;
-using Neo4jClient;
-using Neo4jClient.Cypher;
 
 namespace CommonCode.BusinessLayer.Repositories
 {
@@ -58,12 +57,12 @@ namespace CommonCode.BusinessLayer.Repositories
                 var value = result.SingleOrDefault();
                 var rowCount = value == null ? 0 : 1;
 
-                return CreateDataResult(query.Query.QueryText, rowCount, 
+                return CreateDataResult(query.Query.QueryText, rowCount,
                     value, DataResultType.Success, Success, Success);
             }
             catch (DbException exception)
             {
-                CreateDataResult(query.Query.QueryText, 0, default(T), DataResultType.UnknownError, 
+                CreateDataResult(query.Query.QueryText, 0, default(T), DataResultType.UnknownError,
                     FriendlyReadMessage, InternalReadMessage, null, exception);
                 throw;
             }
@@ -82,12 +81,12 @@ namespace CommonCode.BusinessLayer.Repositories
 
                 var rowCount = values.Count();
 
-                return CreateDataResult(query.Query.QueryText, rowCount, values, DataResultType.Success, 
+                return CreateDataResult(query.Query.QueryText, rowCount, values, DataResultType.Success,
                     Success, Success);
             }
             catch (DbException exception)
             {
-                CreateDataResult(query.Query.QueryText, 0, default(T), DataResultType.UnknownError, 
+                CreateDataResult(query.Query.QueryText, 0, default(T), DataResultType.UnknownError,
                     FriendlyReadMessage, InternalReadMessage, null, exception);
                 throw;
             }
@@ -116,7 +115,7 @@ namespace CommonCode.BusinessLayer.Repositories
             try
             {
                 var values = map(query);
-                var itemCount = ((ICollection) values).Count;
+                var itemCount = ((ICollection)values).Count;
 
                 return CreateDataResult(query.Query.QueryText, itemCount, values, DataResultType.Success,
                     Success, Success);
@@ -201,7 +200,7 @@ namespace CommonCode.BusinessLayer.Repositories
             }
             else if (resultType.Equals(DataResultType.Success))
             {
-                // resultType = DataResultType.UnknownRecord;
+                resultType = DataResultType.UnknownRecord;
                 friendlyMessage = "Sorry, no results were returned.";
                 internalMessage = $"Procedure {functionName} returned 0 records.";
             }

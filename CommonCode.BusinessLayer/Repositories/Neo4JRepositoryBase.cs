@@ -18,6 +18,8 @@ namespace CommonCode.BusinessLayer.Repositories
         public const string SystemLogin = "SystemLogin";
         public const string User = "User";
 
+        public const string Identifies = "IDENTIFIES";
+
         private const string FriendlyReadMessage = "The system was unable to read the requested item(s) from the database.";
         private const string InternalReadMessage = "A database exception occurred when trying to read the value(s).";
         protected const string Success = "Success";
@@ -62,9 +64,14 @@ namespace CommonCode.BusinessLayer.Repositories
             }
             catch (DbException exception)
             {
-                CreateDataResult(query.Query.QueryText, 0, default(T), DataResultType.UnknownError,
+                return CreateDataResult(query.Query.QueryText, 0, default(T), DataResultType.UnknownError,
                     FriendlyReadMessage, InternalReadMessage, null, exception);
-                throw;
+            }
+            catch (InvalidOperationException exception)
+            {
+                return CreateDataResult(query.Query.QueryText, 0, default(T), DataResultType.UnknownError,
+                    "We got a few more results than expected just then, and Curio doesn't know how to deal with the extra ones. We've woken up the developers and they'll get it working ASAP.",
+                    "An operation was performed that usually only returns a single record, but multiple records were returned.", null, exception);
             }
         }
 
@@ -184,7 +191,7 @@ namespace CommonCode.BusinessLayer.Repositories
 
         protected DataResult<TResult> CreateDataResult<TResult>(string functionName, int rowCount,
         TResult value, DataResultType resultType, string friendlyMessage, string internalMessage,
-        int? valueId = null, DbException exception = null)
+        int? valueId = null, Exception exception = null)
         {
             if (rowCount > 0)
             {
@@ -220,7 +227,7 @@ namespace CommonCode.BusinessLayer.Repositories
             return dataResult;
         }
 
-        private string GetFormattedCallString(string functionName, List<string> parameters)
+        private string GetFormattedCallString(string functionName, IEnumerable<string> parameters)
         {
             var parametersWithQuotes = parameters.Select(x => $"\"{x}\"");
 

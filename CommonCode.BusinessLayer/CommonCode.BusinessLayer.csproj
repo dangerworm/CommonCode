@@ -52,7 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\Neo4JHelper.cs" />
+    <Compile Include="Helpers\CypherHelper.cs" />
     <Compile Include="Interfaces\IGraphNode.cs" />
     <Compile Include="Interfaces\IIdentifiableByGuid.cs" />
     <Compile Include="Neo4jClientFactory.cs" />

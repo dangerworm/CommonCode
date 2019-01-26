@@ -4,6 +4,6 @@ namespace CommonCode.BusinessLayer.Interfaces
 {
     public interface IIdentifiableByGuid
     {
-        Guid? Id { get; }
+        Guid Id { get; }
     }
 }

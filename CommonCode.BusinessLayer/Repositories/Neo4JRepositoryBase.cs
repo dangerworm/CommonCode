@@ -18,7 +18,10 @@ namespace CommonCode.BusinessLayer.Repositories
         public const string SystemLogin = "SystemLogin";
         public const string User = "User";
 
+        public const string Asked = "ASKED"; // Question ASKED_BY User
+        public const string Answers = "ANSWERS"; // Answer ANSWERS Question
         public const string Identifies = "IDENTIFIES";
+        public const string SelectedFor = "SELECTED_FOR"; // Answer SELECTED_FOR:UserId Question
 
         private const string FriendlyReadMessage = "The system was unable to read the requested item(s) from the database.";
         private const string InternalReadMessage = "A database exception occurred when trying to read the value(s).";
@@ -207,7 +210,7 @@ namespace CommonCode.BusinessLayer.Repositories
             }
             else if (resultType.Equals(DataResultType.Success))
             {
-                resultType = DataResultType.UnknownRecord;
+                resultType = DataResultType.NoRecordsFound;
                 friendlyMessage = "Sorry, no results were returned.";
                 internalMessage = $"Procedure {functionName} returned 0 records.";
             }

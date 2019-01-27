@@ -40,8 +40,8 @@ namespace CommonCode.BusinessLayer.Helpers
             return $"({node})";
         }
 
-        public static string CreateCypherRelationship(string relationshipType,
-            string relationshipName = null)
+        public static string CreateRelationship(string relationshipType,
+            string relationshipName = null, string parameterName = null)
         {
             Verify.NotNull(relationshipType, nameof(relationshipType));
 
@@ -49,6 +49,9 @@ namespace CommonCode.BusinessLayer.Helpers
 
             if (!string.IsNullOrWhiteSpace(relationshipName))
                 relationship = $"{relationshipName}:{relationship}";
+
+            if (!string.IsNullOrWhiteSpace(parameterName))
+                relationship += $" {{{parameterName}}}";
 
             return $"[{relationship}]";
         }

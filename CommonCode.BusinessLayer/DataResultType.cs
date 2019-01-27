@@ -50,6 +50,9 @@ namespace CommonCode.BusinessLayer
         [Description("No Records Affected")]
         NoRecordsAffected,
 
+        [Description("No Records Found")]
+        NoRecordsFound,
+
         [Description("Not Required")]
         NotRequired,
 

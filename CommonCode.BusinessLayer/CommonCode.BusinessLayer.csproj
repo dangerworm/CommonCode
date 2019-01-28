@@ -53,7 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\CypherHelper.cs" />
-    <Compile Include="Interfaces\IGraphNode.cs" />
+    <Compile Include="Interfaces\IGraphAuditData.cs" />
     <Compile Include="Interfaces\IIdentifiableByGuid.cs" />
     <Compile Include="Neo4jClientFactory.cs" />
     <Compile Include="SpecialClasses\OrderedDictionary.cs" />

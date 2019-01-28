@@ -18,9 +18,9 @@ namespace CommonCode.BusinessLayer.Repositories
         public const string SystemLogin = "SystemLogin";
         public const string User = "User";
 
-        public const string Asked = "ASKED"; // Question ASKED_BY User
+        public const string Asked = "ASKED"; // User ASKED Question
         public const string Answers = "ANSWERS"; // Answer ANSWERS Question
-        public const string Identifies = "IDENTIFIES";
+        public const string Identifies = "IDENTIFIES"; // SystemLogin IDENTIFIES User
         public const string SelectedFor = "SELECTED_FOR"; // Answer SELECTED_FOR:UserId Question
 
         private const string FriendlyReadMessage = "The system was unable to read the requested item(s) from the database.";

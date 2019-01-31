@@ -78,6 +78,31 @@ namespace CommonCode.BusinessLayer.Repositories
             }
         }
 
+        protected DataResult<TNew> ReadDynamic<TNew>(ICypherFluentQuery<TNew> query)
+        {
+            try
+            {
+                var result = query.ResultsAsync.Result;
+
+                var value = result.SingleOrDefault();
+                var rowCount = value == null ? 0 : 1;
+
+                return CreateDataResult(query.Query.QueryText, rowCount,
+                    value, DataResultType.Success, Success, Success);
+            }
+            catch (DbException exception)
+            {
+                return CreateDataResult(query.Query.QueryText, 0, default(dynamic), DataResultType.UnknownError,
+                    FriendlyReadMessage, InternalReadMessage, null, exception);
+            }
+            catch (InvalidOperationException exception)
+            {
+                return CreateDataResult(query.Query.QueryText, 0, default(dynamic), DataResultType.UnknownError,
+                    "We got a few more results than expected just then, and Curio doesn't know how to deal with the extra ones. We've woken up the developers and they'll get it working ASAP.",
+                    "An operation was performed that usually only returns a single record, but multiple records were returned.", null, exception);
+            }
+        }
+
         protected DataResult<IEnumerable<T>> ReadList(ICypherFluentQuery<T> query)
         {
             if (HasCustomReader)
@@ -85,6 +110,25 @@ namespace CommonCode.BusinessLayer.Repositories
                 return ReadList(query, MapList);
             }
 
+            try
+            {
+                var values = query.Results;
+
+                var rowCount = values.Count();
+
+                return CreateDataResult(query.Query.QueryText, rowCount, values, DataResultType.Success,
+                    Success, Success);
+            }
+            catch (DbException exception)
+            {
+                CreateDataResult(query.Query.QueryText, 0, default(T), DataResultType.UnknownError,
+                    FriendlyReadMessage, InternalReadMessage, null, exception);
+                throw;
+            }
+        }
+
+        protected DataResult<IEnumerable<TNew>> ReadDynamicList<TNew>(ICypherFluentQuery<TNew> query)
+        {
             try
             {
                 var values = query.Results;

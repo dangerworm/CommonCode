@@ -11,21 +11,13 @@ namespace CommonCode.BusinessLayer.Helpers
             if (!properties.Any())
                 return "";
 
-            var delimiter = ", ";
-            var elements = properties.Keys.Select(x => $"{x}: {{{x}}}");
-
-            var objectValues = string.Join(delimiter, elements);
-
-            if (includeValues)
-            {
-                objectValues = objectValues.FormatFromDictionary(properties, true);
-            }
+            var objectValues = GetObjectValues(properties, includeValues);
 
             return $"({nodeName}:{nodeType} {{{objectValues}}})";
         }
 
-        public static string CreateNode(string nodeType,
-            string nodeName = null, string parameterName = null)
+        public static string CreateNode(string nodeType, string nodeName = null,
+            string parameterName = null)
         {
             Verify.NotNull(nodeType, nameof(nodeType));
 
@@ -38,6 +30,19 @@ namespace CommonCode.BusinessLayer.Helpers
                 node += $" {{{parameterName}}}";
 
             return $"({node})";
+        }
+
+        public static string CreateRelationship(string relationshipType,
+            string relationshipName, Dictionary<string, string> properties,
+            bool includeValues = false)
+        {
+            if (!properties.Any())
+                return "";
+
+            Verify.NotNull(relationshipType, nameof(relationshipType));
+            var objectValues = GetObjectValues(properties, includeValues);
+
+            return $"[{relationshipName}:{relationshipType} {{{objectValues}}}]";
         }
 
         public static string CreateRelationship(string relationshipType,
@@ -54,6 +59,18 @@ namespace CommonCode.BusinessLayer.Helpers
                 relationship += $" {{{parameterName}}}";
 
             return $"[{relationship}]";
+        }
+
+        private static string GetObjectValues(Dictionary<string, string> properties, bool includeValues)
+        {
+            var delimiter = ", ";
+            var elements = properties.Keys.Select(x => $"{x}: {{{x}}}");
+            var objectValues = string.Join(delimiter, elements);
+
+            if (includeValues)
+                objectValues = objectValues.FormatFromDictionary(properties, !properties.Values.All(x => x.StartsWith("\"")));
+
+            return objectValues;
         }
     }
 }

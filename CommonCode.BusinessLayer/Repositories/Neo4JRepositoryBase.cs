@@ -92,12 +92,12 @@ namespace CommonCode.BusinessLayer.Repositories
             }
             catch (DbException exception)
             {
-                return CreateDataResult(query.Query.QueryText, 0, default(dynamic), DataResultType.UnknownError,
+                return CreateDataResult(query.Query.QueryText, 0, default(TNew), DataResultType.UnknownError,
                     FriendlyReadMessage, InternalReadMessage, null, exception);
             }
             catch (InvalidOperationException exception)
             {
-                return CreateDataResult(query.Query.QueryText, 0, default(dynamic), DataResultType.UnknownError,
+                return CreateDataResult(query.Query.QueryText, 0, default(TNew), DataResultType.UnknownError,
                     "We got a few more results than expected just then, and Curio doesn't know how to deal with the extra ones. We've woken up the developers and they'll get it working ASAP.",
                     "An operation was performed that usually only returns a single record, but multiple records were returned.", null, exception);
             }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security;
 using System.Text;
@@ -17,6 +18,24 @@ namespace CommonCode.BusinessLayer.Helpers
             return SecurityElement.FromString($"<xml>{value}</xml>")?.Text ?? "";
         }
 
+        public static string FormatFromDictionary(this string formatString, Dictionary<string, string> values,
+            bool surroundWithQuotes = false)
+        {
+            var i = 0;
+            var keyToInt = new Dictionary<string, int>();
+            var newFormatString = new StringBuilder(formatString);
+
+            foreach (var tuple in values)
+            {
+                newFormatString = newFormatString.Replace("{" + tuple.Key + "}", "{" + i + "}");
+                keyToInt.Add(tuple.Key, i);
+                i++;
+            }
+
+            var orderedValues = values.OrderBy(x => keyToInt[x.Key]).Select(x => surroundWithQuotes ? $"\"{x.Value}\"" : x.Value as object).ToArray();
+            return string.Format(newFormatString.ToString(), orderedValues);
+        }
+
         public static bool IsAny<T>(this T value, params T[] values)
         {
             return values.Contains(value);
@@ -24,20 +43,7 @@ namespace CommonCode.BusinessLayer.Helpers
 
         public static bool IsNumeric(this object value)
         {
-            if (value == null)
-            {
-                return false;
-            }
-
-            try
-            {
-                var integer = Convert.ToInt32(value.ToString());
-                return true;
-            }
-            catch (FormatException)
-            {
-                return false;
-            }
+            return !string.IsNullOrWhiteSpace(value.ToString()) && value.ToString().Replace(",", "").Replace(".", "").All(char.IsDigit);
         }
 
         public static string ToSentenceCase(this string input)

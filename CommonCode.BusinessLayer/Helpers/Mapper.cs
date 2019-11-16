@@ -20,12 +20,9 @@ namespace CommonCode.BusinessLayer.Helpers
             {
                 var targetProperty = targetProperties?.SingleOrDefault(x => x.Name == sourceProperty.Name);
 
-                if (targetProperty == null ||
-                    targetProperty.PropertyType != sourceProperty.PropertyType ||
-                    !targetProperty.CanWrite)
-                {
+                if (targetProperty == null || !targetProperty.CanWrite ||
+                    targetProperty.PropertyType != sourceProperty.PropertyType)
                     continue;
-                }
 
                 var sourceGetter = sourceProperty.GetGetMethod();
                 var targetSetter = targetProperty.GetSetMethod();

@@ -3,23 +3,25 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 
 namespace CommonCode.BusinessLayer
 {
-    public partial class UnitOfWork : IUnitOfWork
+    public partial class SqlUnitOfWork<TConnection, TTransaction> 
+        : IUnitOfWork<TConnection, TTransaction>
+            where TConnection : IDbConnection
+            where TTransaction : IDbTransaction
     {
         private readonly DbConnectionFactory _connectionFactory;
         private readonly string _connectionString;
         private readonly string _id;
 
-        private IDbConnection _connection;
+        private TConnection _connection;
         private List<DataResult> _results;
 
-        private SqlTransaction _transaction;
+        private TTransaction _transaction;
 
-        public UnitOfWork(string connectionString)
+        public SqlUnitOfWork(string connectionString)
         {
             Verify.NotNull(connectionString, nameof(connectionString));
 

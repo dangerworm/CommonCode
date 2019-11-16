@@ -2,11 +2,11 @@
 
 namespace CommonCode.BusinessLayer.Services
 {
-    public abstract class ServiceBase
+    public abstract class ServiceBase<TConnection, TTransaction>
     {
-        protected IUnitOfWork UnitOfWork;
+        protected IUnitOfWork<TConnection, TTransaction> UnitOfWork;
 
-        protected ServiceBase(IUnitOfWork unitOfWork)
+        protected ServiceBase(IUnitOfWork<TConnection, TTransaction> unitOfWork)
         {
             Verify.NotNull(unitOfWork, nameof(unitOfWork));
 

@@ -43,20 +43,7 @@ namespace CommonCode.BusinessLayer.Helpers
 
         public static bool IsNumeric(this object value)
         {
-            if (value == null)
-            {
-                return false;
-            }
-
-            try
-            {
-                var integer = Convert.ToInt32(value.ToString());
-                return true;
-            }
-            catch (FormatException)
-            {
-                return false;
-            }
+            return !string.IsNullOrWhiteSpace(value.ToString()) && value.ToString().Replace(",", "").Replace(".", "").All(char.IsDigit);
         }
 
         public static string ToSentenceCase(this string input)

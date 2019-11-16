@@ -254,7 +254,7 @@ namespace CommonCode.BusinessLayer.Repositories
             }
             else if (resultType.Equals(DataResultType.Success))
             {
-                // resultType = DataResultType.UnknownRecord;
+                resultType = DataResultType.NoRecordsFound;
                 friendlyMessage = "Sorry, no results were returned.";
                 internalMessage = $"Procedure {storedProcedureName} returned 0 records.";
             }

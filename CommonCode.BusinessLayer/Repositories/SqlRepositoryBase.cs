@@ -103,38 +103,6 @@ namespace CommonCode.BusinessLayer.Repositories
             {
                 var value = map(storedProcedureName, parameters);
 
-                var itemCount = value == null ? 0 : 1;
-                return CreateDataResult(storedProcedureName, itemCount, value, DataResultType.Success, Success, Success);
-            }
-            catch (DbException exception)
-            {
-                CreateDataResult(storedProcedureName, 0, default(T), DataResultType.UnknownError, FriendlyReadMessage, InternalReadMessage, null, exception);
-                throw;
-            }
-        }
-
-        protected DataResult<IEnumerable<T>> ReadList(string storedProcedureName, DynamicParameters parameters, Func<string, DynamicParameters, IEnumerable<T>> map)
-        {
-            try
-            {
-                var values = map(storedProcedureName, parameters);
-
-                var itemCount = ((ICollection)values).Count;
-                return CreateDataResult(storedProcedureName, itemCount, values, DataResultType.Success, Success, Success);
-            }
-            catch (DbException exception)
-            {
-                CreateDataResult(storedProcedureName, 0, default(T), DataResultType.UnknownError, FriendlyReadMessage, InternalReadMessage, null, exception);
-                throw;
-            }
-        }
-
-        protected DataResult<T> Read(string storedProcedureName, DynamicParameters parameters, Func<string, DynamicParameters, T> map)
-        {
-            try
-            {
-                var value = map(storedProcedureName, parameters);
-
                 return CreateDataResult(storedProcedureName, value == null ? 0 : 1, value, DataResultType.Success, Success, Success);
             }
             catch (DbException exception)
@@ -150,7 +118,7 @@ namespace CommonCode.BusinessLayer.Repositories
             {
                 var values = map(storedProcedureName, parameters);
 
-                return CreateDataResult(storedProcedureName, values.Count(), values, DataResultType.Success, Success, Success);
+                return CreateDataResult(storedProcedureName, ((ICollection)values).Count, values, DataResultType.Success, Success, Success);
             }
             catch (DbException exception)
             {

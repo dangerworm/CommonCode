@@ -182,9 +182,36 @@ namespace CommonCode.BusinessLayer.Repositories
             }
         }
 
-        public DataResult Delete(string functionName, List<string> parameters)
+        public DataResult Update(ICypherFluentQuery query)
         {
-            throw new NotImplementedException();
+            try
+            {
+                query.ExecuteWithoutResults();
+
+                return CreateDataResult(query.Query.QueryText, 1, default(T), DataResultType.Success,
+                    "Node updated", "Node updated");
+            }
+            catch (DbException exception)
+            {
+                return CreateDataResult(query.Query.QueryText, 0, default(T), DataResultType.UnableToUpdateRecord,
+                    "Update failed", "Update failed", null, exception);
+            }
+        }
+
+        public DataResult Delete(ICypherFluentQuery query)
+        {
+            try
+            {
+                query.ExecuteWithoutResults();
+
+                return CreateDataResult(query.Query.QueryText, 1, default(T), DataResultType.Success,
+                    "Node deleted", "Node deleted");
+            }
+            catch (DbException exception)
+            {
+                return CreateDataResult(query.Query.QueryText, 0, default(T), DataResultType.UnableToDeleteRecord,
+                    "Delete failed", "Delete failed", null, exception);
+            }
         }
 
         protected static void InitialiseInformativeVariables(string commandText, out string commandType,
@@ -246,7 +273,10 @@ namespace CommonCode.BusinessLayer.Repositories
                 friendlyMessage = !string.IsNullOrWhiteSpace(friendlyMessage) ? friendlyMessage : Success;
                 internalMessage = !string.IsNullOrWhiteSpace(internalMessage) ? internalMessage : $"Procedure {functionName} completed successfully.";
             }
-            else if (resultType.Equals(DataResultType.Success) && !functionName.ToLower().Contains("return"))
+            else if (resultType.Equals(DataResultType.Success) && 
+                     !functionName.ToLower().Contains("return") && 
+                     !functionName.ToLower().Contains("set") &&
+                     !functionName.ToLower().Contains("delete"))
             {
                 resultType = DataResultType.NotRequired;
                 friendlyMessage = !string.IsNullOrWhiteSpace(friendlyMessage) && !friendlyMessage.Equals(Success) ? friendlyMessage : "No actions required";
